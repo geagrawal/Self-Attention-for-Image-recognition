@@ -1,0 +1,40 @@
+#BATCH APPLICATION="PYTORCH"
+#BATCH APP_VERSION="GPU"
+#BATCH ATTRIBUTES="RUNJOB"
+#BATCH DOCKERIMAGE="hpcregistry.hpc.ford.com/ngc/pytorch:23.06-py3"
+#BATCH JOBNAME="runtool3"
+#BATCH MEMORY="224GB"
+#BATCH NUMCPUS="2"
+#BATCH NUMGPUS="2"
+#BATCH PLACE="pack:shared"
+#BATCH RUNHOST="HPC"
+#BATCH SHELL_PATH="/bin/bash"
+#BATCH SOLVER="DOCKER__LOCANY__N8__LR__OSANY__GPU"
+
+# Options used to generate this script:
+#  -NGPUS 2 -np 2 -x runtool3.sh -i hpcregistry.hpc.ford.com/ngc/pytorch:23.06-py3
+# Copyback file tags: 
+
+COMPUTE_SYSTEM=`cat /etc/conf/COMPUTE_SYSTEM`
+JOBID=${PBS_O_JOBID:-$PBS_JOBID}
+JOBNAME="runtool3"
+RUNDIR=/s/kabdulma/Workspace/SAN-master/tool
+export RUNDIR JOBNAME
+cd $RUNDIR
+
+echo "***************************************************"
+echo "*                 PYTORCH GPU Job                 *"
+echo "***************************************************"
+echo "     Batch Job ID: $JOBID"
+echo "   Batch Job Name: $JOBNAME"
+echo "Working Directory: $RUNDIR"
+echo "   Compute System: $COMPUTE_SYSTEM"
+echo "   Number of CPUs: 2"
+
+# Call the wrapper
+export PYTORCH_DIST_VERSION="GPU"
+export TB_LOGDIR=""
+export PYTORCH_NPROCS="2"
+/apps/pytorch/bin/pytorch_wrapper_dist /s/kabdulma/Workspace/SAN-master/tool/runtool3.sh
+exitstatus=${exitstatus:-${PIPESTATUS[0]}}
+exit ${exitstatus}
